@@ -1,26 +1,25 @@
 #!/usr/bin/env python3
 
-from random import choice as rc
-
-from faker import Faker
-
-from app import app
-from models import db, Movie
-
-fake = Faker()
-
-def make_movies():
-
-    Movie.query.delete()
-    
-    movies = []
-    for i in range(50):
-        m = Movie(title=fake.sentence(nb_words=4).title())
-        movies.append(m)
-
-    db.session.add_all(movies)
-    db.session.commit()
+from app import db
+from models import Movie
 
 if __name__ == '__main__':
-    with app.app_context():
-        make_movies()
+    db.create_all()
+
+    # Create and add sample movie entries
+    movies_data = [
+        {'title': 'Equiliser 3', 'release_year': 2021, 'genre': 'Action'},
+        {'title': 'Expandaples 4', 'release_year': 2022, 'genre': 'Comedy'},
+        {'title': 'Anabelle 4', 'release_year': 2025, 'genre': 'Horror'}
+        
+        ]
+    
+
+
+    for movie_data in movies_data:
+        movie = Movie(**movie_data)
+        db.session.add(movie)
+
+    db.session.commit()
+
+    print("Sample movie entries added to the database.")
